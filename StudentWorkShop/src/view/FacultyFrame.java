@@ -16,13 +16,22 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class FacultyFrame extends JInternalFrame {
 	private JTextField txtFacultyId;
 	private JTextField txtFacultyName;
 	private JButton btnClose;
 	private JButton btnAdd;
+	private JPanel panel_2;
+	private JScrollPane scrollPane;
+	
+	private JTable table;
+	private DefaultTableModel model;
 
 	/**
 	 * Launch the application.
@@ -51,7 +60,7 @@ public class FacultyFrame extends JInternalFrame {
 	public FacultyFrame() {
 		setTitle("Faculty Frame");
 		setClosable(true);
-		setBounds(100, 100, 470, 300);
+		setBounds(100, 100, 470, 448);
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -86,6 +95,7 @@ public class FacultyFrame extends JInternalFrame {
 		panel_1.setLayout(null);
 		
 		btnAdd = new JButton("Add");
+		btnAdd.setIcon(new ImageIcon(FacultyFrame.class.getResource("/image16/add.png")));
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String facultyId = txtFacultyId.getText();
@@ -99,13 +109,14 @@ public class FacultyFrame extends JInternalFrame {
 				if(result){
 					JOptionPane.showMessageDialog(null, "Insert Successfull.");
 					getFacultyId();
+					addDataToTable();
 				}else{
 					JOptionPane.showMessageDialog(null, "Insert Fail.");
 				}
 				txtFacultyName.setText("");
 			}
 		});
-		btnAdd.setBounds(31, 32, 89, 23);
+		btnAdd.setBounds(31, 22, 89, 33);
 		panel_1.add(btnAdd);
 		
 		btnClose = new JButton("Close");
@@ -115,10 +126,54 @@ public class FacultyFrame extends JInternalFrame {
 			}
 		});
 		btnClose.setIcon(new ImageIcon(FacultyFrame.class.getResource("/image16/cancel.png")));
-		btnClose.setBounds(322, 32, 89, 23);
+		btnClose.setBounds(322, 22, 89, 33);
 		panel_1.add(btnClose);
+		
+		panel_2 = new JPanel();
+		panel_2.setBorder(new TitledBorder(null, "Faculty Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_2.setBounds(10, 218, 434, 190);
+		getContentPane().add(panel_2);
+		panel_2.setLayout(null);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 22, 414, 157);
+		panel_2.add(scrollPane);
 
+		model = new DefaultTableModel(null, new Object[] {
+			"Faculty Id", "Faculty Name"	
+		});
+		table = new JTable(model);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.getColumnModel().getColumn(0).setPreferredWidth(120);
+		table.getColumnModel().getColumn(1).setPreferredWidth(400);		
+		
+		table.getTableHeader().setReorderingAllowed(false);//fix column header
+		
+		scrollPane.add(table);
+		scrollPane.setViewportView(table);
+		
 		getFacultyId();
+		addDataToTable();
+	}
+
+	private void addDataToTable() {
+		removeDataFromTable();
+				
+		FacultyDAO dao = new FacultyDAO();
+		Vector faculties = dao.selectAll();
+		int row = faculties.size();
+		for(int i=0; i<row; i++){
+			model.addRow((Vector) faculties.get(i));
+		}
+	}
+
+	private void removeDataFromTable() {
+		int row = model.getRowCount();
+		if(row > 0){
+			for(int i=0; i<row; i++){
+				model.removeRow(0);
+			}
+		}
 	}
 
 	private void getFacultyId() {

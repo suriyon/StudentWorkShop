@@ -72,6 +72,7 @@ public class StudentWorkShop extends JFrame {
 		menuBar.add(mnNewMenu);
 		
 		mntmFaculty = new JMenuItem("ข้อมูลคณะ");
+		mntmFaculty.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image16/house.png")));
 		mntmFaculty.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(facultyFrame == null || facultyFrame.isClosed()){
@@ -86,10 +87,12 @@ public class StudentWorkShop extends JFrame {
 		mnNewMenu.add(mntmFaculty);
 		
 		mntmBranch = new JMenuItem("ข้อมูลสาขา");
+		mntmBranch.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image16/tree.png")));
 		mntmBranch.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		mnNewMenu.add(mntmBranch);
 		
 		mntmStudent = new JMenuItem("ข้อมูลนักศึกษา");
+		mntmStudent.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image16/user_add.png")));
 		mntmStudent.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		mnNewMenu.add(mntmStudent);
 		contentPane = new JPanel();
@@ -101,6 +104,7 @@ public class StudentWorkShop extends JFrame {
 		contentPane.add(toolBar, BorderLayout.NORTH);
 		
 		toolbarFaculty = new JButton("Faculty");
+		toolbarFaculty.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/house.png")));
 		toolbarFaculty.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(facultyFrame == null || facultyFrame.isClosed()){

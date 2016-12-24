@@ -2,7 +2,9 @@ package dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Vector;
 
 import model.Faculty;
 import util.MySQLHelper;
@@ -60,6 +62,31 @@ public class FacultyDAO {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public Vector selectAll(){
+		Vector faculties = new Vector();
+		String sql = "select * from faculty";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData  rsmd = rs.getMetaData();
+			int column = rsmd.getColumnCount();
+			while(rs.next()){
+				Vector faculty = new Vector();
+				for(int i=1; i<=column; i++){
+					faculty.add(rs.getString(i));
+				}
+				faculties.add(faculty);
+			}
+			rs.close();
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return faculties;
 	}
 }
 
