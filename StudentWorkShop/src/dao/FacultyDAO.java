@@ -63,6 +63,26 @@ public class FacultyDAO {
 		}
 		return result;
 	}
+	public boolean update(Faculty faculty){
+		boolean result = false;
+		String sql = "update faculty set facultyName = ? where facultyId = ?";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ps.setString(2, faculty.getFacultyId());
+			ps.setString(1, faculty.getFacultyName());
+			
+			int row = ps.executeUpdate();
+			if(row > 0){
+				result = true;
+			}
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
 	
 	public Vector selectAll(){
 		Vector faculties = new Vector();

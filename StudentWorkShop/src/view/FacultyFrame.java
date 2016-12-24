@@ -21,6 +21,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class FacultyFrame extends JInternalFrame {
 	private JTextField txtFacultyId;
@@ -32,6 +34,8 @@ public class FacultyFrame extends JInternalFrame {
 	
 	private JTable table;
 	private DefaultTableModel model;
+	private JButton btnUpdate;
+	private JButton btnClear;
 
 	/**
 	 * Launch the application.
@@ -116,7 +120,7 @@ public class FacultyFrame extends JInternalFrame {
 				txtFacultyName.setText("");
 			}
 		});
-		btnAdd.setBounds(31, 22, 89, 33);
+		btnAdd.setBounds(15, 22, 89, 33);
 		panel_1.add(btnAdd);
 		
 		btnClose = new JButton("Close");
@@ -126,8 +130,50 @@ public class FacultyFrame extends JInternalFrame {
 			}
 		});
 		btnClose.setIcon(new ImageIcon(FacultyFrame.class.getResource("/image16/cancel.png")));
-		btnClose.setBounds(322, 22, 89, 33);
+		btnClose.setBounds(327, 22, 89, 33);
 		panel_1.add(btnClose);
+		
+		btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String facultyId = txtFacultyId.getText();
+				String facultyName = txtFacultyName.getText();
+				
+				Faculty faculty = new Faculty(facultyId, facultyName);
+				
+				FacultyDAO dao = new FacultyDAO();
+				boolean result = dao.update(faculty);
+				
+				if(result){
+					JOptionPane.showMessageDialog(null, "Update Successfull.");
+					getFacultyId();
+					addDataToTable();					
+				}else{
+					JOptionPane.showMessageDialog(null, "Update Fail.");
+				}
+				txtFacultyName.setText("");
+				btnAdd.setEnabled(true);
+				btnUpdate.setEnabled(false);
+				btnClear.setEnabled(false);
+			}
+		});
+		btnUpdate.setEnabled(false);
+		btnUpdate.setBounds(119, 22, 89, 33);
+		panel_1.add(btnUpdate);
+		
+		btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getFacultyId();
+				txtFacultyName.setText("");
+				btnAdd.setEnabled(true);
+				btnClear.setEnabled(false);
+				btnUpdate.setEnabled(false);
+			}
+		});
+		btnClear.setEnabled(false);
+		btnClear.setBounds(223, 22, 89, 33);
+		panel_1.add(btnClear);
 		
 		panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Faculty Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -142,7 +188,27 @@ public class FacultyFrame extends JInternalFrame {
 		model = new DefaultTableModel(null, new Object[] {
 			"Faculty Id", "Faculty Name"	
 		});
-		table = new JTable(model);
+		table = new JTable(model){
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+		};
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				int rowSelected = table.getSelectedRow();
+				txtFacultyId.setText(table.getValueAt(rowSelected, 0).toString());
+				txtFacultyName.setText(table.getValueAt(rowSelected, 1).toString());
+				
+				btnUpdate.setEnabled(true);
+				btnClear.setEnabled(true);
+				btnAdd.setEnabled(false);
+			}
+		});
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(0).setPreferredWidth(120);
 		table.getColumnModel().getColumn(1).setPreferredWidth(400);		
