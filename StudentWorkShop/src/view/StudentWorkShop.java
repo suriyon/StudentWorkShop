@@ -99,6 +99,23 @@ public class StudentWorkShop extends JFrame {
 		mnNewMenu.add(mntmFaculty);
 		
 		mntmBranch = new JMenuItem("ข้อมูลสาขา");
+		mntmBranch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(branchFrame == null || branchFrame.isClosed()){
+					branchFrame = new BranchFrame();
+					branchFrame.setVisible(true);
+					
+					desktopPane.add(branchFrame);
+					
+					try {
+						branchFrame.setMaximum(true);
+					} catch (PropertyVetoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 		mntmBranch.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image16/tree.png")));
 		mntmBranch.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		mnNewMenu.add(mntmBranch);

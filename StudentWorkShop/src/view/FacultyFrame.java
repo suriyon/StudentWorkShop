@@ -116,11 +116,11 @@ public class FacultyFrame extends JInternalFrame {
 				boolean result = dao.insert(faculty);
 				
 				if(result){
-					JOptionPane.showMessageDialog(null, "Insert Successfull.");
+					JOptionPane.showMessageDialog(null, "Insert Faculty Successfull.");
 					getFacultyId();
 					addDataToTable();
 				}else{
-					JOptionPane.showMessageDialog(null, "Insert Fail.");
+					JOptionPane.showMessageDialog(null, "Insert Faculty Fail.");
 				}
 				txtFacultyName.setText("");
 			}
@@ -139,6 +139,7 @@ public class FacultyFrame extends JInternalFrame {
 		panel_1.add(btnClose);
 		
 		btnUpdate = new JButton("Update");
+		btnUpdate.setIcon(new ImageIcon(FacultyFrame.class.getResource("/image16/update.png")));
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String facultyId = txtFacultyId.getText();
@@ -150,11 +151,11 @@ public class FacultyFrame extends JInternalFrame {
 				boolean result = dao.update(faculty);
 				
 				if(result){
-					JOptionPane.showMessageDialog(null, "Update Successfull.");
+					JOptionPane.showMessageDialog(null, "Update Faculty Successfull.");
 					getFacultyId();
 					addDataToTable();					
 				}else{
-					JOptionPane.showMessageDialog(null, "Update Fail.");
+					JOptionPane.showMessageDialog(null, "Update Faculty Fail.");
 				}
 				txtFacultyName.setText("");
 				btnAdd.setEnabled(true);
@@ -167,6 +168,7 @@ public class FacultyFrame extends JInternalFrame {
 		panel_1.add(btnUpdate);
 		
 		btnClear = new JButton("Clear");
+		btnClear.setIcon(new ImageIcon(FacultyFrame.class.getResource("/image16/arrow_refresh.png")));
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				getFacultyId();
