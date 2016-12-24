@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import model.Faculty;
 import util.MySQLHelper;
 
 public class FacultyDAO {
@@ -40,4 +41,31 @@ public class FacultyDAO {
 		}
 		return facultyId;
 	}
+	public boolean insert(Faculty faculty){
+		boolean result = false;
+		String sql = "insert into faculty(facultyId, facultyName) values(?, ?)";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ps.setString(1, faculty.getFacultyId());
+			ps.setString(2, faculty.getFacultyName());
+			
+			int row = ps.executeUpdate();
+			if(row > 0){
+				result = true;
+			}
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
 }
+
+
+
+
+
+
+
