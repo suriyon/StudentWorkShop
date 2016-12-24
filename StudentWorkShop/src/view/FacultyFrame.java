@@ -36,6 +36,10 @@ public class FacultyFrame extends JInternalFrame {
 	private DefaultTableModel model;
 	private JButton btnUpdate;
 	private JButton btnClear;
+	private JPanel panel_3;
+	private JLabel lblNewLabel_2;
+	private JTextField txtSearch;
+	private JButton btnSearch;
 
 	/**
 	 * Launch the application.
@@ -62,9 +66,10 @@ public class FacultyFrame extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public FacultyFrame() {
+		setFrameIcon(new ImageIcon(FacultyFrame.class.getResource("/image32/house.png")));
 		setTitle("Faculty Frame");
 		setClosable(true);
-		setBounds(100, 100, 470, 448);
+		setBounds(100, 100, 470, 475);
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -94,7 +99,7 @@ public class FacultyFrame extends JInternalFrame {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Command", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(10, 126, 434, 66);
+		panel_1.setBounds(10, 118, 434, 66);
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -177,12 +182,12 @@ public class FacultyFrame extends JInternalFrame {
 		
 		panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Faculty Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(10, 218, 434, 190);
+		panel_2.setBounds(10, 265, 434, 170);
 		getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 22, 414, 157);
+		scrollPane.setBounds(10, 22, 414, 138);
 		panel_2.add(scrollPane);
 
 		model = new DefaultTableModel(null, new Object[] {
@@ -218,8 +223,45 @@ public class FacultyFrame extends JInternalFrame {
 		scrollPane.add(table);
 		scrollPane.setViewportView(table);
 		
+		panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(null, "Search Faculty", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_3.setBounds(10, 190, 434, 66);
+		getContentPane().add(panel_3);
+		panel_3.setLayout(null);
+		
+		lblNewLabel_2 = new JLabel("กรอกชื่อคณะ");
+		lblNewLabel_2.setBounds(21, 29, 86, 14);
+		panel_3.add(lblNewLabel_2);
+		
+		txtSearch = new JTextField();
+		txtSearch.setBounds(98, 26, 211, 20);
+		panel_3.add(txtSearch);
+		txtSearch.setColumns(10);
+		
+		btnSearch = new JButton("Search");
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String facultyName = txtSearch.getText();
+				addDataToTable(facultyName);
+			}
+		});
+		btnSearch.setIcon(new ImageIcon(FacultyFrame.class.getResource("/image16/magnifier.png")));
+		btnSearch.setBounds(319, 20, 89, 33);
+		panel_3.add(btnSearch);
+		
 		getFacultyId();
 		addDataToTable();
+	}
+
+	protected void addDataToTable(String facultyName) {
+		removeDataFromTable();
+		
+		FacultyDAO dao = new FacultyDAO();
+		Vector faculties = dao.selectByName(facultyName);
+		int row = faculties.size();
+		for(int i=0; i<row; i++){
+			model.addRow((Vector) faculties.get(i));
+		}
 	}
 
 	private void addDataToTable() {

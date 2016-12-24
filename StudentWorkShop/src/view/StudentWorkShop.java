@@ -18,6 +18,7 @@ import javax.swing.JDesktopPane;
 import java.awt.Frame;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 import java.awt.event.ActionEvent;
 
 public class StudentWorkShop extends JFrame {
@@ -29,9 +30,13 @@ public class StudentWorkShop extends JFrame {
 	
 	//InternalFrame
 	private FacultyFrame facultyFrame;
+	private BranchFrame branchFrame;
+	
+	//Menu
 	private JMenuItem mntmFaculty;
 	private JMenuItem mntmBranch;
 	private JMenuItem mntmStudent;
+	private JButton toolbarBranch;
 
 	/**
 	 * Launch the application.
@@ -80,6 +85,13 @@ public class StudentWorkShop extends JFrame {
 					facultyFrame.setVisible(true);
 					
 					desktopPane.add(facultyFrame);
+					
+					try {
+						facultyFrame.setMaximum(true);
+					} catch (PropertyVetoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -112,6 +124,13 @@ public class StudentWorkShop extends JFrame {
 					facultyFrame.setVisible(true);
 					
 					desktopPane.add(facultyFrame);
+					
+					try {
+						facultyFrame.setMaximum(true);
+					} catch (PropertyVetoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -123,6 +142,27 @@ public class StudentWorkShop extends JFrame {
 				System.exit(0);
 			}
 		});
+		
+		toolbarBranch = new JButton("Branch");
+		toolbarBranch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(branchFrame == null || branchFrame.isClosed()){
+					branchFrame = new BranchFrame();
+					branchFrame.setVisible(true);
+					
+					desktopPane.add(branchFrame);
+					
+					try {
+						branchFrame.setMaximum(true);
+					} catch (PropertyVetoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		toolbarBranch.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/tree.png")));
+		toolBar.add(toolbarBranch);
 		toolbarExit.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/cross.png")));
 		toolBar.add(toolbarExit);
 		

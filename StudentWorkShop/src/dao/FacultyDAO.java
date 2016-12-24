@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import model.Faculty;
@@ -89,6 +91,56 @@ public class FacultyDAO {
 		String sql = "select * from faculty";
 		try {
 			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData  rsmd = rs.getMetaData();
+			int column = rsmd.getColumnCount();
+			while(rs.next()){
+				Vector faculty = new Vector();
+				for(int i=1; i<=column; i++){
+					faculty.add(rs.getString(i));
+				}
+				faculties.add(faculty);
+			}
+			rs.close();
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return faculties;
+	}
+	
+	public List<Faculty> select(){
+		List<Faculty> faculties = new ArrayList<Faculty>();
+		String sql = "select * from faculty";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()){
+				Faculty faculty = new Faculty();
+				faculty.setFacultyId(rs.getString(1));
+				faculty.setFacultyName(rs.getString(2));
+				
+				faculties.add(faculty);
+			}
+			rs.close();
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return faculties;
+	}
+	
+	public Vector selectByName(String facultyName){
+		Vector faculties = new Vector();
+		String sql = "select * from faculty where facultyName like ?";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ps.setString(1, "%" + facultyName + "%");
 			ResultSet rs = ps.executeQuery();
 			ResultSetMetaData  rsmd = rs.getMetaData();
 			int column = rsmd.getColumnCount();
