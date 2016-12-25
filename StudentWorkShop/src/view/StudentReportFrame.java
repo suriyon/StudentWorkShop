@@ -12,7 +12,12 @@ import dao.BranchDAO;
 import dao.FacultyDAO;
 import model.Branch;
 import model.Faculty;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import util.ComboBoxItem;
+import util.MySQLHelper;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,7 +25,9 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 
 public class StudentReportFrame extends JInternalFrame {
@@ -86,6 +93,45 @@ public class StudentReportFrame extends JInternalFrame {
 		panel.add(cmbCondition);
 		
 		btnPrint = new JButton("Print");
+		btnPrint.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selected = cmbCondition.getSelectedItem().toString();
+				if(selected.equals("สาขาที่สังกัด")){
+					String reportPath = "reports/StudentBranchReport.jasper";
+					Map map = new HashMap();
+					Object item = cmbPrint.getSelectedItem();
+					String branchId = ((ComboBoxItem)item).getKey();
+					map.put("branchId", branchId);
+					
+					try {
+						JasperPrint jp = JasperFillManager.fillReport(reportPath, 
+								map, MySQLHelper.openDB());
+						JasperViewer jv = new JasperViewer(jp, false);
+						jv.setVisible(true);
+					} catch (JRException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}else if(selected.equals("คณะที่สังกัด")){
+					String reportPath = "reports/StudentFacultyReport.jasper";
+					Map map = new HashMap();
+					Object item = cmbPrint.getSelectedItem();
+					String facultyId = ((ComboBoxItem)item).getKey();
+					map.put("facultyId", facultyId);
+					
+					try {
+						JasperPrint jp = JasperFillManager.fillReport(reportPath, 
+								map, MySQLHelper.openDB());
+						JasperViewer jv = new JasperViewer(jp, false);
+						jv.setVisible(true);
+					} catch (JRException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+			}
+		});
 		btnPrint.setIcon(new ImageIcon(StudentReportFrame.class.getResource("/image16/printer_add.png")));
 		btnPrint.setBounds(378, 35, 89, 36);
 		panel.add(btnPrint);
