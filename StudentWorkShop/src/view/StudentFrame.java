@@ -6,6 +6,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.UIManager;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 import dao.BranchDAO;
 import dao.FacultyDAO;
@@ -22,9 +23,14 @@ import javax.swing.JComboBox;
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class StudentFrame extends JInternalFrame {
 	private JTextField txtStudentId;
@@ -38,6 +44,9 @@ public class StudentFrame extends JInternalFrame {
 	private JTextField txtSearch;
 	private JButton btnSearch;
 	private JScrollPane scrollPane;
+	
+	private JTable table;
+	private DefaultTableModel model;
 
 	/**
 	 * Launch the application.
@@ -140,7 +149,7 @@ public class StudentFrame extends JInternalFrame {
 				boolean result = dao.insert(student);
 				if(result){
 					JOptionPane.showMessageDialog(null, "Insert Student Successfully.");
-					
+					addStudentToTable();
 				}else{
 					JOptionPane.showMessageDialog(null, "Insert Student Fail.");
 				}
@@ -162,11 +171,44 @@ public class StudentFrame extends JInternalFrame {
 		panel_1.add(btnClose);
 		
 		btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String studentId = txtStudentId.getText();
+				String studentName = txtStudentName.getText();
+				
+				Student student = new Student();
+				student.setStudentId(studentId);
+				student.setStudentName(studentName);
+				
+				StudentDAO dao = new StudentDAO();
+				boolean result = dao.update(student);
+				if(result){
+					JOptionPane.showMessageDialog(null, "Update Student Successfully.");
+					addStudentToTable();
+				}else{
+					JOptionPane.showMessageDialog(null, "Update Student Fail.");
+				}
+				btnAdd.setEnabled(true);
+				btnUpdate.setEnabled(false);
+				btnClear.setEnabled(false);
+				txtStudentId.setText("");
+				txtStudentName.setText("");
+			}
+		});
 		btnUpdate.setEnabled(false);
 		btnUpdate.setBounds(125, 22, 89, 33);
 		panel_1.add(btnUpdate);
 		
 		btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnAdd.setEnabled(true);
+				btnUpdate.setEnabled(false);
+				btnClear.setEnabled(false);
+				txtStudentId.setText("");
+				txtStudentName.setText("");
+			}
+		});
 		btnClear.setEnabled(false);
 		btnClear.setBounds(232, 22, 89, 33);
 		panel_1.add(btnClear);
@@ -187,6 +229,12 @@ public class StudentFrame extends JInternalFrame {
 		panel_2.add(txtSearch);
 		
 		btnSearch = new JButton("Search");
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String studentName = txtSearch.getText();
+				addStudentToTable(studentName);
+			}
+		});
 		btnSearch.setBounds(339, 20, 89, 33);
 		panel_2.add(btnSearch);
 		
@@ -202,7 +250,92 @@ public class StudentFrame extends JInternalFrame {
 		
 		
 		addFacultyToComboBox();
+		prepareStudentTable();
+		addStudentToTable();
 	}
+	protected void addStudentToTable(String studentName) {
+		removeStudentFromTable();
+		
+		StudentDAO dao = new StudentDAO();
+		Vector students = dao.selectByName(studentName);
+		
+		int row = students.size();
+		for(int i=0; i<row; i++){
+			model.addRow((Vector) students.get(i));
+		}
+	}
+
+	private void addStudentToTable() {
+		removeStudentFromTable();
+		
+		StudentDAO dao = new StudentDAO();
+		Vector students = dao.selectAll();
+		
+		int row = students.size();
+		for(int i=0; i<row; i++){
+			model.addRow((Vector) students.get(i));
+		}
+	}
+
+	private void removeStudentFromTable() {
+		int row = model.getRowCount();
+		for(int i=0; i<row; i++){
+			model.removeRow(0);
+		}
+	}
+
+	private void prepareStudentTable() {
+		model = new DefaultTableModel();
+		model.addColumn("Student ID");
+		model.addColumn("Student Name");
+		model.addColumn("Branch Name");
+		
+		table = new JTable(model){
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+		};
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				int row = table.getSelectedRow();
+				txtStudentId.setText(table.getValueAt(row, 0).toString());
+				txtStudentName.setText(table.getValueAt(row, 1).toString());
+				
+				String branchName = table.getValueAt(row, 2).toString();
+				int count = cmbBranch.getItemCount();
+				int index = 0;
+				for(int i=0; i<count; i++){
+					Object item = cmbBranch.getSelectedItem();
+					String tmp = ((ComboBoxItem)item).getValue();
+					if(branchName.equals(tmp)){
+						index = i;
+						break;
+					}
+				}
+				
+				cmbBranch.setSelectedIndex(index);
+				btnUpdate.setEnabled(true);
+				btnClear.setEnabled(true);
+				btnAdd.setEnabled(false);
+			}
+		});
+		table.getColumnModel().getColumn(0).setPreferredWidth(120);
+		table.getColumnModel().getColumn(1).setPreferredWidth(180);
+		table.getColumnModel().getColumn(2).setPreferredWidth(200);
+		
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.getTableHeader().setReorderingAllowed(false);
+		
+		table.setFillsViewportHeight(true);
+		scrollPane.add(table);
+		scrollPane.setViewportView(table);
+	}
+
 	private void addFacultyToComboBox() {
 		if(cmbFaculty.getItemCount() > 0){
 			cmbFaculty.removeAllItems();

@@ -78,4 +78,31 @@ public class StudentDAO {
 		}
 		return students;
 	}
+	public Vector selectByName(String studentName) {
+		Vector students = new Vector();
+		String sql = "select s.studentId, s.studentName, b.branchName from branch as b, student as s "
+				+ " where b.branchId = s.branchId and s.studentName like ?";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ps.setString(1, "%" + studentName + "%");
+			ResultSet rs = ps.executeQuery();
+			
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int column = rsmd.getColumnCount();
+			while(rs.next()){
+				Vector student = new Vector();
+				for(int i=1; i<=column; i++){
+					student.add(rs.getString(i));
+				}
+				students.add(student);
+			}
+			rs.close();
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return students;
+	}
 }
