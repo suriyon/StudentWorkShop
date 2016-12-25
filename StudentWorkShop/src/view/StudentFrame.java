@@ -31,6 +31,7 @@ import java.util.Vector;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.ImageIcon;
 
 public class StudentFrame extends JInternalFrame {
 	private JTextField txtStudentId;
@@ -73,6 +74,7 @@ public class StudentFrame extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public StudentFrame() {
+		setFrameIcon(new ImageIcon(StudentFrame.class.getResource("/image32/user_add.png")));
 		setTitle("Student Frame");
 		setClosable(true);
 		setBounds(100, 100, 545, 555);
@@ -134,6 +136,7 @@ public class StudentFrame extends JInternalFrame {
 		getContentPane().add(panel_1);
 		
 		btnAdd = new JButton("Add");
+		btnAdd.setIcon(new ImageIcon(StudentFrame.class.getResource("/image16/add.png")));
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String studentId = txtStudentId.getText();
@@ -162,6 +165,7 @@ public class StudentFrame extends JInternalFrame {
 		panel_1.add(btnAdd);
 		
 		btnClose = new JButton("Close");
+		btnClose.setIcon(new ImageIcon(StudentFrame.class.getResource("/image16/cross.png")));
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -171,6 +175,7 @@ public class StudentFrame extends JInternalFrame {
 		panel_1.add(btnClose);
 		
 		btnUpdate = new JButton("Update");
+		btnUpdate.setIcon(new ImageIcon(StudentFrame.class.getResource("/image16/update.png")));
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String studentId = txtStudentId.getText();
@@ -200,6 +205,7 @@ public class StudentFrame extends JInternalFrame {
 		panel_1.add(btnUpdate);
 		
 		btnClear = new JButton("Clear");
+		btnClear.setIcon(new ImageIcon(StudentFrame.class.getResource("/image16/arrow_refresh.png")));
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnAdd.setEnabled(true);
@@ -207,6 +213,8 @@ public class StudentFrame extends JInternalFrame {
 				btnClear.setEnabled(false);
 				txtStudentId.setText("");
 				txtStudentName.setText("");
+				cmbFaculty.setSelectedIndex(0);
+				
 			}
 		});
 		btnClear.setEnabled(false);
@@ -229,6 +237,7 @@ public class StudentFrame extends JInternalFrame {
 		panel_2.add(txtSearch);
 		
 		btnSearch = new JButton("Search");
+		btnSearch.setIcon(new ImageIcon(StudentFrame.class.getResource("/image16/magnifier.png")));
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String studentName = txtSearch.getText();
@@ -307,19 +316,35 @@ public class StudentFrame extends JInternalFrame {
 				txtStudentName.setText(table.getValueAt(row, 1).toString());
 				
 				String branchName = table.getValueAt(row, 2).toString();
-				int count = cmbBranch.getItemCount();
+				
+				FacultyDAO dao = new FacultyDAO();
+				String facultyName = dao.getFacultyName(branchName);
+				
+				int count = cmbFaculty.getItemCount();
 				int index = 0;
 				for(int i=0; i<count; i++){
-					Object item = cmbBranch.getSelectedItem();
-					String tmp = ((ComboBoxItem)item).getValue();
-					if(branchName.equals(tmp)){
+					Object item = cmbFaculty.getItemAt(i);
+					if(((ComboBoxItem)item).getValue().equals(facultyName)){
 						index = i;
 						break;
 					}
 				}
+				cmbFaculty.setSelectedIndex(index);
 				
-				cmbBranch.setSelectedIndex(index);
-				btnUpdate.setEnabled(true);
+								
+				int count1 = cmbBranch.getItemCount();
+				int index1 = 0;
+				for(int i=0; i<count1; i++){
+					Object item = cmbBranch.getItemAt(i);
+					if(((ComboBoxItem)item).getValue().equals(branchName)){
+						index1 = i;
+						break;
+					}
+				}
+				
+				cmbBranch.setSelectedIndex(index1);
+				
+				btnUpdate.setEnabled(true); 
 				btnClear.setEnabled(true);
 				btnAdd.setEnabled(false);
 			}

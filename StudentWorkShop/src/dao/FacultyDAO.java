@@ -160,6 +160,28 @@ public class FacultyDAO {
 		}
 		return faculties;
 	}
+	public String getFacultyName(String branchName){
+		String facultyName = "";
+		String sql = "select f.facultyName from faculty as f, branch as b "
+				+ "where b.branchName = ? "
+				+ "and b.facultyId = f.facultyId";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ps.setString(1, branchName);
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				facultyName = rs.getString(1);
+			}
+			rs.close();
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return facultyName;
+	}
 }
 
 
