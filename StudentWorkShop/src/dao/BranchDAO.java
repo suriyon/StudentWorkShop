@@ -168,4 +168,29 @@ public class BranchDAO {
 		}
 		return branches;
 	}
+
+	public List<Branch> select() {
+		List<Branch> branches = new ArrayList<Branch>();
+		String sql = "select branchId, branchName from branch";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()){
+				Branch branch = new Branch();
+				branch.setBranchId(rs.getString(1));
+				branch.setBranchName(rs.getString(2));
+				
+				branches.add(branch);
+			}
+			rs.close();
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return branches;
+	}
 }

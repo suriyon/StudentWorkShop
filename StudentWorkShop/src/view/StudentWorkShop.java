@@ -32,6 +32,7 @@ public class StudentWorkShop extends JFrame {
 	private FacultyFrame facultyFrame;
 	private BranchFrame branchFrame;
 	private StudentFrame studentFrame;
+	private StudentReportFrame studentReportFrame;
 	
 	//Menu
 	private JMenuItem mntmFaculty;
@@ -39,6 +40,11 @@ public class StudentWorkShop extends JFrame {
 	private JMenuItem mntmStudent;
 	private JButton toolbarBranch;
 	private JButton toolbarStudent;
+	private JMenu mnNewMenu_1;
+	private JMenuItem mntmReportFaculty;
+	private JMenuItem mntmReportBranch;
+	private JMenuItem mntmReportStudent;
+	private JButton toolbarPrintStudent;
 
 	/**
 	 * Launch the application.
@@ -143,6 +149,22 @@ public class StudentWorkShop extends JFrame {
 		mntmStudent.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image16/user_add.png")));
 		mntmStudent.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		mnNewMenu.add(mntmStudent);
+		
+		mnNewMenu_1 = new JMenu("ออกรายงาน");
+		mnNewMenu_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		menuBar.add(mnNewMenu_1);
+		
+		mntmReportFaculty = new JMenuItem("ข้อมูลคณะ");
+		mntmReportFaculty.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		mnNewMenu_1.add(mntmReportFaculty);
+		
+		mntmReportBranch = new JMenuItem("ข้อมูลสาขา");
+		mntmReportBranch.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		mnNewMenu_1.add(mntmReportBranch);
+		
+		mntmReportStudent = new JMenuItem("ข้อมูลนักศึกษา");
+		mntmReportStudent.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		mnNewMenu_1.add(mntmReportStudent);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -220,6 +242,27 @@ public class StudentWorkShop extends JFrame {
 		});
 		toolbarStudent.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/vcard_add.png")));
 		toolBar.add(toolbarStudent);
+		
+		toolbarPrintStudent = new JButton("Print Student");
+		toolbarPrintStudent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(studentReportFrame == null || studentReportFrame.isClosed()){
+					studentReportFrame = new StudentReportFrame();
+					studentReportFrame.setVisible(true);
+					
+					desktopPane.add(studentReportFrame);
+					
+					try {
+						studentReportFrame.setMaximum(true);
+					} catch (PropertyVetoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		toolbarPrintStudent.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/printer.png")));
+		toolBar.add(toolbarPrintStudent);
 		toolbarExit.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/cross.png")));
 		toolBar.add(toolbarExit);
 		
