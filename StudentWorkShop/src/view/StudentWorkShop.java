@@ -31,12 +31,14 @@ public class StudentWorkShop extends JFrame {
 	//InternalFrame
 	private FacultyFrame facultyFrame;
 	private BranchFrame branchFrame;
+	private StudentFrame studentFrame;
 	
 	//Menu
 	private JMenuItem mntmFaculty;
 	private JMenuItem mntmBranch;
 	private JMenuItem mntmStudent;
 	private JButton toolbarBranch;
+	private JButton toolbarStudent;
 
 	/**
 	 * Launch the application.
@@ -121,6 +123,23 @@ public class StudentWorkShop extends JFrame {
 		mnNewMenu.add(mntmBranch);
 		
 		mntmStudent = new JMenuItem("ข้อมูลนักศึกษา");
+		mntmStudent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(studentFrame == null || studentFrame.isClosed()){
+					studentFrame = new StudentFrame();
+					studentFrame.setVisible(true);
+					
+					desktopPane.add(studentFrame);
+					
+					try {
+						studentFrame.setMaximum(true);
+					} catch (PropertyVetoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 		mntmStudent.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image16/user_add.png")));
 		mntmStudent.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		mnNewMenu.add(mntmStudent);
@@ -180,11 +199,31 @@ public class StudentWorkShop extends JFrame {
 		});
 		toolbarBranch.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/tree.png")));
 		toolBar.add(toolbarBranch);
+		
+		toolbarStudent = new JButton("Student");
+		toolbarStudent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(studentFrame == null || studentFrame.isClosed()){
+					studentFrame = new StudentFrame();
+					studentFrame.setVisible(true);
+					
+					desktopPane.add(studentFrame);
+					
+					try {
+						studentFrame.setMaximum(true);
+					} catch (PropertyVetoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		toolbarStudent.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/vcard_add.png")));
+		toolBar.add(toolbarStudent);
 		toolbarExit.setIcon(new ImageIcon(StudentWorkShop.class.getResource("/image32/cross.png")));
 		toolBar.add(toolbarExit);
 		
 		desktopPane = new JDesktopPane();
 		contentPane.add(desktopPane, BorderLayout.CENTER);
 	}
-
 }

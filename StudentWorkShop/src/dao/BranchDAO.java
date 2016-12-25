@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import model.Branch;
@@ -131,6 +133,30 @@ public class BranchDAO {
 				for(int i=1; i<=column; i++){
 					branch.add(rs.getString(i));
 				}
+				branches.add(branch);
+			}
+			rs.close();
+			ps.close();
+			MySQLHelper.closeDB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return branches;
+	}
+	public List<Branch> select(String facultyId){
+		List<Branch> branches = new ArrayList<Branch>();
+		String sql = "select branchId, branchName from branch where facultyId = ?";
+		try {
+			PreparedStatement ps = MySQLHelper.openDB().prepareStatement(sql);
+			ps.setString(1, facultyId);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()){
+				Branch branch = new Branch();
+				branch.setBranchId(rs.getString(1));
+				branch.setBranchName(rs.getString(2));
+				
 				branches.add(branch);
 			}
 			rs.close();
